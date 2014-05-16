@@ -120,5 +120,13 @@ public class Resource {
 	public ProjectList getProjectsAssigned() {
 		return projectsAssignedList;
 	}
-
+	
+	public boolean containsProject(String idProject) {
+		Project project = alreadyAssignedProjectList.findProjectByID(idProject);
+		//Si on a déjà trouvé le projet, pas besoin de chercher dans l'autre liste
+		if(project == null)
+			project = projectsAssignedList.findProjectByID(idProject);
+		
+		return (project != null);
+	}
 } // Resource class
