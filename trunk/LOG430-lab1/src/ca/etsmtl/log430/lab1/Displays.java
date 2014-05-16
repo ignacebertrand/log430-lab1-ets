@@ -1,5 +1,7 @@
 package ca.etsmtl.log430.lab1;
 
+import java.util.ArrayList;
+
 /**
  * This class displays various types of information on projects and resources
  * (individually and as lists) to the screen.
@@ -11,6 +13,8 @@ package ca.etsmtl.log430.lab1;
 /*
  * Modification Log
  * ************************************************************************
+ * v2.0, V. Debris,	2014-Mai-13 - Ajout de la methode displayProjectsPreviouslyAssignedToResource(Resource)
+ * 
  * v1.6, R. Champagne, 2013-Sep-13 - Various refactorings for new lab.
  * 
  * v1.5, R. Champagne, 2012-Jun-19 - Various refactorings for new lab.
@@ -165,6 +169,46 @@ public class Displays {
 		} // while
 
 	}
+	
+	/**
+	 * Lists the projects previously assigned to a resource before this session.
+	 * 
+	 * @param resource
+	 */
+	public void displayProjectsPreviouslyAssignedToResource(Resource resource) {
+
+		boolean done;
+		Project project;
+
+		System.out.println("\nProjects assigned (before this session) to : "
+				+ resource.getFirstName() + " " + resource.getLastName() + " "
+				+ resource.getID());
+		lineCheck(2);
+		System.out
+				.println("========================================================= ");
+		lineCheck(1);
+
+		resource.getPreviouslyAssignedProjectList().goToFrontOfList();
+		done = false;
+
+		while (!done) {
+
+			project = resource.getPreviouslyAssignedProjectList().getNextProject();
+
+			if (project == null) {
+
+				done = true;
+
+			} else {
+
+				displayProject(project);
+				lineCheck(2);
+
+			} // if
+
+		} // while
+
+	}
 
 	/**
 	 * Displays the resources in a resource list. Displays the same information
@@ -203,6 +247,39 @@ public class Displays {
 
 	}
 
+	public void displayAllRolesToProject(Project project, ResourceList list) {
+		String idProject = project.getID();
+		
+		System.out.print("\n");
+		lineCheck(1);
+
+		list.goToFrontOfList();
+
+		Resource resource;
+		boolean done = false;
+		ArrayList<String> listRoles = new ArrayList<String>();
+		while (!done) {
+
+			resource = list.getNextResource();
+
+			if (resource == null) {
+				done = true;
+			} else {
+				boolean contains = resource.containsProject(idProject);
+				if(contains && !listRoles.contains(resource.getRole()))
+					listRoles.add(resource.getRole());
+			} // if
+
+		} // while
+		
+		System.out.println("Role for the project "+project.getID()+" :");
+		for(String nomRole : listRoles) {
+			System.out.println("-"+nomRole);
+			
+			lineCheck(1);
+		}
+	}
+	
 	/**
 	 * Displays the projects in a project list. Displays the same
 	 * information that is listed in the displayProject() method listed above.

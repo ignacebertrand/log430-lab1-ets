@@ -39,6 +39,8 @@ package ca.etsmtl.log430.lab1;
 /*
  * Modification Log
  * **************************************************************************
+ * v2.0, V. Debris,	2014-Mai-13 - Gestion de l'option 6, "List projects previously assigned to a resource"
+ * 
  * v1.5, R. Champagne, 2013-Sep-13 - Various refactorings for new lab.
  * 
  * v1.4, R. Champagne, 2012-May-31 - Various refactorings for new lab.
@@ -99,7 +101,7 @@ public class ResourceAssignment {
 			} else {
 				done = false;
 			} // if
-
+			
 			while (!done) {
 
 				userChoice = menu.mainMenu();
@@ -148,6 +150,25 @@ public class ResourceAssignment {
 						} // if
 					} // if
 
+					break;
+				
+				case '6' :
+					System.out.println("-------- OPTION 6 --------");
+					display.displayResourceList(resourceList.getListOfResources());
+					resource = menu.pickResource(resourceList.getListOfResources());
+					if (resource != null) {
+						display.displayProjectsPreviouslyAssignedToResource(resource);
+					} // if
+					break;
+
+				case '7':
+
+					display.displayProjectList(projectList.getListOfProjects());
+					project = menu.pickProject(projectList.getListOfProjects());
+
+					if (project != null) {
+						display.displayAllRolesToProject(project, resourceList.getListOfResources());
+					} // if
 					break;
 
 				case 'X':
