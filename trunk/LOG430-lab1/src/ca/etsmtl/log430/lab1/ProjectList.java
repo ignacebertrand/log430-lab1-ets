@@ -1,5 +1,9 @@
 package ca.etsmtl.log430.lab1;
 
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
+
 /**
  * This class is used by various other classes that need to keep a list of
  * projects. It extends the List class which provides the basic functionality for
@@ -92,7 +96,56 @@ public class ProjectList extends List {
 		return (result);
 
 	}
+	
+	
+	public ArrayList<String> findProjectSameDate(String dateDeb, String datefin,String projectId, ProjectList list) {
 
+		Project currentObject;
+		boolean done = false;
+		boolean result = false;
+				
+		
+		ArrayList<String> alListProjectSameDate = new ArrayList<String>();
+		
+		String[] tabDateArrive = dateDeb.split("-");
+		GregorianCalendar gcDebut = new GregorianCalendar(Integer.parseInt(tabDateArrive[2]), Integer.parseInt(tabDateArrive[0])-1, Integer.parseInt(tabDateArrive[1]));
+		
+		String[] tabDateDepart = datefin.split("-");
+		GregorianCalendar gcFin = new GregorianCalendar(Integer.parseInt(tabDateDepart[2]), Integer.parseInt(tabDateDepart[0])-1, Integer.parseInt(tabDateDepart[1]));
+			
+		goToFrontOfList();
+
+		while (!done) {
+
+			currentObject = getNextProject();
+			
+			if (currentObject == null) {
+
+				done = true;
+
+			} else if(currentObject.getID() != projectId){
+				tabDateArrive = currentObject.getStartDate().split("-");
+				GregorianCalendar gcCurrentDebut = new GregorianCalendar(Integer.parseInt(tabDateArrive[2]), Integer.parseInt(tabDateArrive[0])-1, Integer.parseInt(tabDateArrive[1]));
+				
+				tabDateDepart = currentObject.getEndDate().split("-");
+				GregorianCalendar gcCurrentFin = new GregorianCalendar(Integer.parseInt(tabDateDepart[2]), Integer.parseInt(tabDateDepart[0])-1, Integer.parseInt(tabDateDepart[1]));
+							
+
+				if(((gcDebut.equals(gcCurrentDebut) || gcDebut.after(gcCurrentDebut)) && gcDebut.before(gcCurrentFin)) || 
+						((gcFin.before(gcCurrentFin) || gcFin.equals(gcCurrentFin)) && gcFin.after(gcCurrentDebut)) || 
+						((gcDebut.before(gcCurrentDebut) || gcDebut.equals(gcCurrentDebut)) && (gcFin.equals(gcCurrentFin) || gcFin.after(gcCurrentFin))) || 
+						(gcDebut.after(gcCurrentDebut) && gcFin.before(gcCurrentFin))) {
+					
+					alListProjectSameDate.add(currentObject.getID());
+				}
+					
+			} // if
+
+		} // while
+
+		return alListProjectSameDate;
+
+	}
 	public Project findProjectByID(String id) {
 
 		Project currentObject;
