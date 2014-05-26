@@ -1,5 +1,7 @@
 package ca.etsmtl.log430.lab1;
 
+import java.text.ParseException;
+
 /**
  * Main class for assignment 1 for LOG430, Architecture logicielle.
  * 
@@ -58,7 +60,6 @@ package ca.etsmtl.log430.lab1;
 public class ResourceAssignment {
 
 	public static void main(String argv[]) {
-
 		if (argv.length != 2) {
 			System.out.println("\n\nIncorrect number of input parameters -"
 					+ " correct usage:");
@@ -90,7 +91,7 @@ public class ResourceAssignment {
 			 */
 
 			ProjectReader projectList = new ProjectReader(argv[0]);
-			ResourceReader resourceList = new ResourceReader(argv[1]);
+			ResourceReader resourceList = new ResourceReader(argv[1],projectList.getListOfProjects());
 
 			if ((projectList.getListOfProjects() == null)
 					|| (resourceList.getListOfResources() == null)) {
@@ -145,8 +146,19 @@ public class ResourceAssignment {
 						display.displayProjectList(projectList.getListOfProjects());
 						project = menu.pickProject(projectList.getListOfProjects());
 						if (project != null) {
-							project.assignResource(resource);
-							resource.assignProject(project);
+							int chargeTravail = 0;
+							if(project.getPriority().equals("H"))
+								chargeTravail = 100;
+							else if(project.getPriority().equals("M"))
+								chargeTravail = 50;
+							else if(project.getPriority().equals("L"))
+								chargeTravail = 25;
+							String surcharge = display.checkRessourceSurchage(resource, chargeTravail, project.getID(),project.getStartDate(),project.getEndDate());
+							if(surcharge.equals("")) {
+								project.assignResource(resource);
+								resource.assignProject(project);
+							}else
+								System.out.println(surcharge);
 						} // if
 					} // if
 

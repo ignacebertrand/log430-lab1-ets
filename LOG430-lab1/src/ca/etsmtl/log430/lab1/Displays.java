@@ -1,5 +1,6 @@
 package ca.etsmtl.log430.lab1;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 
 /**
@@ -89,6 +90,7 @@ public class Displays {
 				+ project.getStartDate() + " "
 				+ project.getEndDate() + " "
 				+ project.getPriority());
+		
 	}
 
 	/**
@@ -127,7 +129,7 @@ public class Displays {
 			} // if
 
 		} // while
-
+		
 	}
 
 	/**
@@ -268,6 +270,7 @@ public class Displays {
 				boolean contains = resource.containsProject(idProject);
 				if(contains && !listRoles.contains(resource.getRole()))
 					listRoles.add(resource.getRole());
+				
 			} // if
 
 		} // while
@@ -315,5 +318,71 @@ public class Displays {
 		} // while
 
 	}
+	
+	/**
+	 * Vérifie si une ressource n'est pas surchagée
+	 */
+	public String checkRessourceSurchage(Resource resource, int chargeTrav, String projectId, String dateDeb, String dateFin) {
+		String messageErreur = "";
+		boolean done2 = false;
+		boolean done = false;
+		//Projets de la resources
+		ProjectList projects =resource.getProjectsAssigned();
+		//Ajout des projets déjà dans le fichier
+		ProjectList oldProjects = resource.getPreviouslyAssignedProjectList();
+		oldProjects.goToFrontOfList();
+		Project oldProject;
+		while (!done) {
+			oldProject = oldProjects.getNextProject();
+			if (oldProject == null) {
+				done = true;
+			} else {
+				projects.addProject(oldProject);
+			}
+		}
+		//fin ajout
 
+		//Parcours des projets
+		projects.goToFrontOfList();
+		Project project;
+		int chargeTravail = chargeTrav;
+		while (!done2) {
+			project = projects.getNextProject();
+			
+			
+			if (project == null) {
+				done2 = true;
+			} else {
+				
+				//On récupère les projets qui ont lieu en même temps que ce projet
+				ArrayList<String> alProjet = projects.findProjectSameDate(dateDeb, dateFin, projectId, projects);
+				if(alProjet.size() > 0)
+				{
+					
+					for(String id : alProjet) {
+						int charge=0;
+						if(projects.findProjectByID(id).getPriority().equals("H"))
+							charge = 100;
+						else if(projects.findProjectByID(id).getPriority().equals("M"))
+							charge = 50;
+						else if(projects.findProjectByID(id).getPriority().equals("L"))
+							charge = 25;
+						chargeTravail += charge;
+					}
+					
+					if(chargeTravail > 100) {
+						messageErreur+= "La ressource "+resource.getID()+" est surchargée\n";
+						//on passe à la prochaine ressource
+						done2 = true;
+					}
+				}
+			
+				
+				
+			} // if
+
+		} // while
+
+		return messageErreur;
+	}
 } // Display
