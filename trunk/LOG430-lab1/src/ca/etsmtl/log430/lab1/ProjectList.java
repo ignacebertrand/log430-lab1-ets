@@ -98,7 +98,7 @@ public class ProjectList extends List {
 	}
 	
 	
-	public ArrayList<String> findProjectSameDate(String dateDeb, String datefin,String projectId, ProjectList list) {
+	public ArrayList<String> findProjectSameDate(String dateDeb, String datefin,String projectId) {
 
 		Project currentObject;
 		boolean done = false;
@@ -123,7 +123,7 @@ public class ProjectList extends List {
 
 				done = true;
 
-			} else if(currentObject.getID() != projectId){
+			} else if(!currentObject.getID().equals(projectId)){
 				tabDateArrive = currentObject.getStartDate().split("-");
 				GregorianCalendar gcCurrentDebut = new GregorianCalendar(Integer.parseInt(tabDateArrive[2]), Integer.parseInt(tabDateArrive[0])-1, Integer.parseInt(tabDateArrive[1]));
 				
@@ -139,7 +139,8 @@ public class ProjectList extends List {
 					alListProjectSameDate.add(currentObject.getID());
 				}
 					
-			} // if
+			} 
+			
 
 		} // while
 

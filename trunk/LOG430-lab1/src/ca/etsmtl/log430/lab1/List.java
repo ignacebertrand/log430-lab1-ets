@@ -56,7 +56,6 @@ public class List {
 	 * @param item
 	 */
 	public void appendItemToList(Object item) {
-
 		itemList.add(item);
 
 	} // Append Item
